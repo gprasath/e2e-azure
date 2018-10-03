@@ -82,8 +82,8 @@ mongodb-jiva:
     - openebs-deploy
   script: 
    - echo "jobs-Azure-Started"
-   - chmod 775 ./script/mongo-app-deploy
-   - ./script/mongo-app-deploy
+   - chmod 775 ./script/mongodb-app-deploy
+   - ./script/mongodb-app-deploy
 
   artifacts:
     paths:
