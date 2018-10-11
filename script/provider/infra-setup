@@ -8,7 +8,7 @@ set -ex
 ## TODO: Ideally, run_metadata should be passed as gitlab runner (CI runtime) ENV
 run_metadata=""
 
-## https://github.com/openebs/litmus/blob/master/providers/openebs/installers/operator/master/ansible/vars.yaml
+## https://github.com/openebs/litmus/blob/master/apps/percona/deployers/test_vars.yml
 test_name="openebsinstaller"
 
 if [[ -n "$run_metadata" ]]; then
@@ -40,14 +40,16 @@ printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' "%"
 ## DEPENDENCIES  ##
 ###################
 
-## Derive the kubeconfig of the azure cluster into the gitlab job runner pod
+## Derive the kubeconfig of the AWS cluster into the gitlab job runner pod
+## "aws-openebs" is a shared path for the gitlab runner passed as artifact by gitlab 
 
 echo "Setting up test dependencies.."
 
-# TODO - Investigate need for another folder 
+# TODO - Investigate need another folder called aws-openebs
 mkdir ~/.kube; mkdir azure
 cp  /openebs/e2e-azure/azoebs_aks_name/config ~/.kube/config
 cp /openebs/e2e-azure/azoebs_aks_name/config azure/
+
 
 for i in efk-vars.yml efk.yml get_url.yml; do
   wget https://raw.githubusercontent.com/openebs/e2e-infrastructure/master/production/efk-client/playbook/$i
@@ -58,8 +60,11 @@ ansible-playbook efk.yml --extra-vars "commit_id=$CI_COMMIT_SHA pipeline_id=$CI_
 
 ## Clone the litmus repo, checkout the e2e branch, navigate to litmus root 
 
-git clone https://github.com/atulabhi/litmus.git
-cd litmus; git checkout v0.7-RC1
+#git clone https://github.com/atulabhi/litmus.git
+#cd litmus; git checkout v0.7-RC1
+
+git clone https://github.com/openebs/litmus.git
+cd litmus
 
 task_delimiter;
 
